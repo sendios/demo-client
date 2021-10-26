@@ -7,7 +7,7 @@
             background-color: #000;
             color: aquamarine;
             position: fixed;
-            height: 200px;
+            height: 50%;
             width: 100%;
             bottom: 0;
             overflow-y: scroll;
@@ -18,16 +18,22 @@
 <body>
 
 <form id="email_form">
-    <input type="email" id="email">
+    <input type="email" id="email" placeholder="1. your email">
     <input type="submit">
 </form>
-<br>
+<br><br>
+<button id="send">2. Send email</button>
+<br><br>
+<button id="online">3. Send Online</button>
+<br><br>
+<button id="payment">3. Make payment</button>
+<br><br>
+<button id="field">4. Set favorite fruit</button>
 
-<button id="send">Send email</button>
-<br>
-<button id="payment">Make payment</button>
-<br>
-<button id="field">Set favorite fruit</button>
+
+<br><br>
+<button id="unsub">. Unsubscribe</button>
+
 
 <div id="console"></div>
 <script src="/index.js"></script>

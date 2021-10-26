@@ -1,9 +1,6 @@
-let result_box = document.getElementById('result_box');
-
-
 let projectId = 17125;
 let typeId = 1;
-let email = 'bananamebot+' + Math.floor(Math.random() * 26453) + '@gmail.com';
+let email;
 let userId;
 
 
@@ -25,6 +22,12 @@ document.getElementById('email_form').onsubmit = function (event) {
                 emailStatus += ' and not trusted';
             }
             writeConsole('Email status: ' + emailStatus);
+
+            request('user/project/' + projectId + '/email/' + email)
+                .then(function (data) {
+                    userId = data.user.id;
+                    writeConsole('Sendios user ID is ' + userId)
+                });
         });
     return false;
 };
@@ -32,7 +35,7 @@ document.getElementById('email_form').onsubmit = function (event) {
 
 document.getElementById('payment').onclick = function () {
     request('lastpayment', 'POST', {
-        'user_id': 1240896676,
+        'user_id': userId,
         "start_date": "1509617696",
         "expire_date": "1609617696",
         "total_count": "14",
@@ -60,21 +63,38 @@ document.getElementById('send').onclick = function () {
 }
 
 document.getElementById('field').onclick = function () {
-    request('userfields/project/' + projectId + '/email/' + email, 'POST', {
+    request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
         'fruit': 'banana',
+    }).then(function (){
+        request('userfields/project/' + projectId + '/email/' + email, 'GET')
+            .then(function (data) {console.log(data)});
     });
 }
 
+document.getElementById('online').onclick = function () {
+    request('users/' + userId + '/online', 'PUT', {
+        "timestamp": "2010-01-01T08:15:30-01:00",
+        'user_id': userId,
+    }, 'https://api-proxy.sendios.co/v3/');
+}
 
-async function request(method = '', httpMethod = 'GET', data = {}) {
+
+async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     let body;
-    if (httpMethod === 'POST') {
+    if (httpMethod === 'POST' || httpMethod === 'PUT') {
         body = JSON.stringify(data)
     }
+    let consoleText = '➡️&nbsp;' + method;
+    if (body) {
+        consoleText += '&nbsp;' + body;
+    }
 
-    writeConsole('API&nbsp;' + method + '&nbsp;' + body);
+    writeConsole(consoleText);
 
-    let response = await fetch('https://api-proxy.sendios.co/v1/' + method, {
+    if (!host) {
+        host = 'https://api-proxy.sendios.co/v1/';
+    }
+    let response = await fetch(host + method, {
         method: httpMethod,
         headers: {
             'Content-Type': 'application/json',
@@ -96,10 +116,10 @@ function writeConsole(message) {
 }
 
 setInterval(function () {
-    fetch('https://webhook-store.sendios.co/pop/17125/YW5kcmV3QHNlbmRpb3MuaW8=')
+    fetch('https://webhook-store.sendios.co/pop/17125/' + btoa(email))
         .then(function (response) {
             response.json().then(events => events.forEach(function (event) {
-                let message = 'Webhook ' + event.event;
+                let message = '📈&nbsp;' + event.event;
                 if (event.mail_id !== undefined) {
                     message += ' email #' + event.mail_id;
                 }
@@ -107,7 +127,7 @@ setInterval(function () {
             }));
         })
         .catch(response => console.log(response.status));
-}, 30000)
+}, 3000)
 
 
 
