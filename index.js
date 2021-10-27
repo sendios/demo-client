@@ -119,7 +119,7 @@ setInterval(function () {
     fetch('https://webhook-store.sendios.co/pop/17125/' + btoa(email))
         .then(function (response) {
             response.json().then(events => events.forEach(function (event) {
-                let message = '📈&nbsp;' + event.event;
+                let message = '&U+27A1;&nbsp;' + event.event;
                 if (event.mail_id !== undefined) {
                     message += ' email #' + event.mail_id;
                 }
