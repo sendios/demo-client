@@ -84,7 +84,7 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     if (httpMethod === 'POST' || httpMethod === 'PUT') {
         body = JSON.stringify(data)
     }
-    let consoleText = '➡️&nbsp;' + method;
+    let consoleText = '&U+1F4CA;&nbsp;' + method;
     if (body) {
         consoleText += '&nbsp;' + body;
     }
