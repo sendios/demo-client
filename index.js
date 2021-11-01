@@ -6,31 +6,68 @@ let main_content = el('main_content');
 let currentTemplate;
 let events = {'submit': [], 'click': []};
 
-regController();
+let path = location.pathname.split('/');
+switch (path[1]) {
+    case 'login':
+        loginController(path[2]);
+        break;
+    default:
+        regController();
+}
 
 //-------------------- Controllers --------------------------
 
-function regController() {
-    showTemplate('reg');
-    // next confirmController
+async function regController() {
+    renderTemplate('reg');
+    // next regThanksController
 }
 
-function regFixEmailController() {
-    showTemplate('reg', false);
+async function regFixEmailController() {
+    renderTemplate('reg', false);
     el('emailError').style.display = 'block';
 }
 
-function retThanksController() {
-    showTemplate('regThanks', false);
+async function regThanksController() {
+    renderTemplate('regThanks', false);
+    registerEventClick('okRegThanks', function (){
+        request('push/system', 'POST', {
+            'type_id': typeId,
+            'project_id': projectId,
+            'category': 1,
+            'client_id': 134933,
+            'data': {
+                'user': {
+                    'email': email,
+                }
+            }
+        }).then(function () {
+            confirmController();
+        })
+    })
+    location = '/login/YW5kZXJAZ21haWwuY29t';
 }
 
-function confirmController() {
-    registration();
-    showTemplate('confirm', false);
+async function confirmController() {
+    // registration();
+    renderTemplate('confirm', false);
 }
 
-function paymentController() {
-    showTemplate('payment');
+async function loginController(emailBase) {
+    email = atob(emailBase);
+    renderTemplate('login');
+    let data = await request('user/project/' + projectId + '/email/' + email)
+    userId = data.user.id;
+    writeConsoleReply('Sendios user ID is ' + userId);
+    request('users/' + userId + '/online', 'PUT', {
+        "timestamp": "2010-01-01T08:15:30-01:00",
+        'user_id': userId,
+    }, 'https://api-proxy.sendios.co/v3/');
+
+}
+
+
+async function paymentController() {
+    renderTemplate('payment');
 }
 
 //------------------------ Helpers -------------------------
@@ -64,7 +101,7 @@ function registerEvent(eventType, objectId, callback) {
 //-----------------------------------------------
 
 
-function showTemplate(name, rerender = false) {
+function renderTemplate(name, rerender = false) {
     if (name === currentTemplate && !rerender) {
         return;
     }
@@ -95,7 +132,7 @@ registerEvent('submit', 'email_form', function (event) {
                 }
                 writeConsoleReply('Email status: ' + emailStatus);
 
-                confirmController();
+                regThanksController();
                 // if (data.valid) {
                 // } else {
                 //     route('confirm');
@@ -106,15 +143,8 @@ registerEvent('submit', 'email_form', function (event) {
     }
 );
 
-registerEventClick('okRegThanks', function (){
-
-})
-
 
 async function registration() {
-    let data = await request('user/project/' + projectId + '/email/' + email)
-    userId = data.user.id;
-    writeConsoleReply('Sendios user ID is ' + userId)
 }
 
 
@@ -126,26 +156,6 @@ registerEventClick('payment', function () {
         "total_count": "14",
     })
 });
-
-// el('send').onclick = function () {
-//     request('push/system', 'POST', {
-//         'type_id': typeId,
-//         'project_id': projectId,
-//         'category': 1,
-//         'client_id': 134933,
-//         'data': {
-//             'user': {
-//                 'email': email,
-//             }
-//         }
-//     }).then(function () {
-//         request('user/project/' + projectId + '/email/' + email)
-//             .then(function (data) {
-//                 userId = data.user.id;
-//                 writeConsole('Sendios user ID is ' + userId)
-//             });
-//     });
-// }
 //
 // el('field').onclick = function () {
 //     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
@@ -156,12 +166,8 @@ registerEventClick('payment', function () {
 //     });
 // }
 //
-// el('online').onclick = function () {
-//     request('users/' + userId + '/online', 'PUT', {
-//         "timestamp": "2010-01-01T08:15:30-01:00",
-//         'user_id': userId,
-//     }, 'https://api-proxy.sendios.co/v3/');
-// }
+el('online').onclick = function () {
+}
 
 
 async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
@@ -169,7 +175,7 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     if (httpMethod === 'POST' || httpMethod === 'PUT') {
         body = JSON.stringify(data)
     }
-    let consoleText = '➡️&nbsp;' + method;
+    let consoleText = '️&nbsp;' + method;
     if (body) {
         consoleText += '&nbsp;' + body;
     }
@@ -180,6 +186,8 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
             return {'email': 'ander@gmail.com'};
         case "user/project/17125/email/ander@gmail.com":
             return {'user': {'id': 123}};
+        case "push/system":
+            return {};
     }
 
     if (!host) {

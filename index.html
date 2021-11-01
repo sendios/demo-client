@@ -21,6 +21,8 @@
         #console .sendMessage, #console .replyMessage {
             background: #55f;
             color: #fff;
+            max-width: 70%;
+            text-overflow: inherit;
             float: right;
             margin: 5px;
             padding: 5px;
@@ -47,15 +49,21 @@
     </form>
 </template>
 
-<template id="reg_thanks_template">
+<template id="regThanks_template">
     <p>Thank you for registration!</p>
     <p>We will send you an test email</p>
     <button class="ok" id="okRegThanks">OK</button>
 </template>
 
 <template id="confirm_template">
-    <p>Please check your inbox</p>
+    <p>Please find our letter in your inbox, and click on link</p>
 </template>
+
+<template id="login_template">
+    <p>Thank you for letter confirmation!</p>
+    <p>Now we know, that you're registered user and send online event.</p>
+</template>
+
 
 
 <template id="send_template">
