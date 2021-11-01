@@ -65,12 +65,20 @@ async function loginController(emailBase) {
 
 async function paymentController() {
     renderTemplate('payment');
+    registerEventClick('payment', function () {
+        request('lastpayment', 'POST', {
+            'user_id': userId,
+            "start_date": "1509617696",
+            "expire_date": "1609617696",
+            "total_count": "14",
+        })
+        finishController();
+    });
 }
 
 async function finishController() {
     renderTemplate('finish');
 }
-
 
 //--------------------- EVENTS ---------------
 
@@ -109,7 +117,6 @@ function renderTemplate(name, rerender = false) {
 }
 
 registerEvent('submit', 'fruit_form', function (event) {
-    console.log(event.target);
     let fruit = event.target.elements.fruit.value;
     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
         'fruit': fruit,
@@ -147,16 +154,6 @@ registerEvent('submit', 'email_form', function (event) {
         return false;
     }
 );
-
-registerEventClick('payment', function () {
-    request('lastpayment', 'POST', {
-        'user_id': userId,
-        "start_date": "1509617696",
-        "expire_date": "1609617696",
-        "total_count": "14",
-    })
-    finishController();
-});
 
 
 async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
@@ -215,7 +212,6 @@ function writeConsole(message, isReply = false) {
     } else {
         messageType = 'send';
     }
-
     console.innerHTML += '<div class="' + messageType + 'Message">' + message + '</div>';
     console.scrollTop = console.scrollHeight;
 }
@@ -233,10 +229,6 @@ function writeConsole(message, isReply = false) {
 //         })
 //         .catch(response => console.log(response.status));
 // }, 3000)
-
-
-
-
 
 
 
