@@ -2,18 +2,44 @@ let projectId = 17125;
 let typeId = 1;
 let email;
 let userId;
-let main_content = document.getElementById('main_content');
+let main_content = el('main_content');
+let currentTemplate;
+let events = {'submit': [], 'click': []};
 
-let events = {'submit':[], 'click':[]};
+regController();
 
-showTemplate('reg');
+//-------------------- Controllers --------------------------
 
-function showTemplate(name) {
-    let code = document.getElementById(name + '_template').innerHTML;
-    if (code) {
-        main_content.innerHTML = code;
-    }
+function regController() {
+    showTemplate('reg');
+    // next confirmController
 }
+
+function regFixEmailController() {
+    showTemplate('reg', false);
+    el('emailError').style.display = 'block';
+}
+
+function retThanksController() {
+    showTemplate('regThanks', false);
+}
+
+function confirmController() {
+    registration();
+    showTemplate('confirm', false);
+}
+
+function paymentController() {
+    showTemplate('payment');
+}
+
+//------------------------ Helpers -------------------------
+
+function el(selector) {
+    return document.getElementById(selector);
+}
+
+//--------------------- EVENTS ---------------
 
 main_content.onsubmit = function (event) {
     if (typeof (events[event.type][event.target.id]) === 'function') {
@@ -27,9 +53,28 @@ main_content.onclick = function (event) {
     }
 };
 
+function registerEventClick(objectId, callback) {
+    return registerEvent('click', objectId, callback);
+}
+
 function registerEvent(eventType, objectId, callback) {
     events[eventType][objectId] = callback;
 }
+
+//-----------------------------------------------
+
+
+function showTemplate(name, rerender = false) {
+    if (name === currentTemplate && !rerender) {
+        return;
+    }
+    let code = el(name + '_template').innerHTML;
+    if (code) {
+        main_content.innerHTML = code;
+    }
+    currentTemplate = name;
+}
+
 
 registerEvent('submit', 'email_form', function (event) {
         email = event.target.elements.email.value;
@@ -48,22 +93,32 @@ registerEvent('submit', 'email_form', function (event) {
                 } else {
                     emailStatus += ' and not trusted';
                 }
-                writeConsole('Email status: ' + emailStatus);
+                writeConsoleReply('Email status: ' + emailStatus);
 
-                request('user/project/' + projectId + '/email/' + email)
-                    .then(function (data) {
-                        userId = data.user.id;
-                        writeConsole('Sendios user ID is ' + userId)
-                    });
+                confirmController();
+                // if (data.valid) {
+                // } else {
+                //     route('confirm');
+                //    route('regFixEmail');
+                // }
             });
-        showTemplate('payment');
         return false;
     }
 );
 
+registerEventClick('okRegThanks', function (){
+
+})
 
 
-registerEvent('click', 'payment', function () {
+async function registration() {
+    let data = await request('user/project/' + projectId + '/email/' + email)
+    userId = data.user.id;
+    writeConsoleReply('Sendios user ID is ' + userId)
+}
+
+
+registerEventClick('payment', function () {
     request('lastpayment', 'POST', {
         'user_id': userId,
         "start_date": "1509617696",
@@ -72,7 +127,7 @@ registerEvent('click', 'payment', function () {
     })
 });
 
-// document.getElementById('send').onclick = function () {
+// el('send').onclick = function () {
 //     request('push/system', 'POST', {
 //         'type_id': typeId,
 //         'project_id': projectId,
@@ -92,7 +147,7 @@ registerEvent('click', 'payment', function () {
 //     });
 // }
 //
-// document.getElementById('field').onclick = function () {
+// el('field').onclick = function () {
 //     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
 //         'fruit': 'banana',
 //     }).then(function (){
@@ -101,7 +156,7 @@ registerEvent('click', 'payment', function () {
 //     });
 // }
 //
-// document.getElementById('online').onclick = function () {
+// el('online').onclick = function () {
 //     request('users/' + userId + '/online', 'PUT', {
 //         "timestamp": "2010-01-01T08:15:30-01:00",
 //         'user_id': userId,
@@ -118,8 +173,14 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     if (body) {
         consoleText += '&nbsp;' + body;
     }
+    writeConsoleSend(consoleText);
 
-    writeConsole(consoleText);
+    switch (method) {
+        case "email/check":
+            return {'email': 'ander@gmail.com'};
+        case "user/project/17125/email/ander@gmail.com":
+            return {'user': {'id': 123}};
+    }
 
     if (!host) {
         host = 'https://api-proxy.sendios.co/v1/';
@@ -131,33 +192,42 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
             'X-Proxy-Token': 'vweihmlauhwveiuamhuiven',
         },
         body
+    }).catch(function (data) {
+        writeConsoleReply('API request or Network error');
     });
 
-
-    return await response.json().then(function (data) {
-        return data.data;
-    });
+    if (response) {
+        return await response.json().then(function (data) {
+            return data.data;
+        })
+    }
 }
 
-function writeConsole(message) {
-    let console = document.getElementById("console");
-    console.innerHTML += message + '<br>';
+function writeConsoleReply(message) {
+    let console = el("console");
+    console.innerHTML += '<div class="replyMessage">' + message + '</div>';
     console.scrollTop = console.scrollHeight;
 }
 
-setInterval(function () {
-    fetch('https://webhook-store.sendios.co/pop/17125/' + btoa(email))
-        .then(function (response) {
-            response.json().then(events => events.forEach(function (event) {
-                let message = '📊&nbsp;' + event.event;
-                if (event.mail_id !== undefined) {
-                    message += ' email #' + event.mail_id;
-                }
-                writeConsole(message)
-            }));
-        })
-        .catch(response => console.log(response.status));
-}, 3000)
+function writeConsoleSend(message) {
+    let console = el("console");
+    console.innerHTML += '<div class="sendMessage">' + message + '</div>';
+    console.scrollTop = console.scrollHeight;
+}
+
+// setInterval(function () {
+//     fetch('https://webhook-store.sendios.co/pop/17125/' + btoa(email))
+//         .then(function (response) {
+//             response.json().then(events => events.forEach(function (event) {
+//                 let message = '📊&nbsp;' + event.event;
+//                 if (event.mail_id !== undefined) {
+//                     message += ' email #' + event.mail_id;
+//                 }
+//                 writeConsole(message)
+//             }));
+//         })
+//         .catch(response => console.log(response.status));
+// }, 3000)
 
 
 
