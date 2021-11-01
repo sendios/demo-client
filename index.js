@@ -1,8 +1,7 @@
 let projectId = 17125;
-let typeId = 1;
 let email;
 let userId;
-let main_content = el('main_content');
+let main_content = document.getElementById('main_content');
 let currentTemplate;
 let events = {'submit': [], 'click': []};
 
@@ -24,12 +23,13 @@ async function regController() {
 
 async function regFixEmailController() {
     renderTemplate('reg', false);
-    el('emailError').style.display = 'block';
+    document.getElementById('emailError').style.display = 'block';
 }
 
 async function regThanksController() {
+    let typeId = 1;
     renderTemplate('regThanks', false);
-    registerEventClick('okRegThanks', function (){
+    registerEventClick('okRegThanks', function () {
         request('push/system', 'POST', {
             'type_id': typeId,
             'project_id': projectId,
@@ -40,9 +40,8 @@ async function regThanksController() {
                     'email': email,
                 }
             }
-        }).then(function () {
-            confirmController();
-        })
+        });
+        confirmController();
     })
 }
 
@@ -56,7 +55,7 @@ async function loginController(emailBase) {
     renderTemplate('login');
     let data = await request('user/project/' + projectId + '/email/' + email)
     userId = data.user.id;
-    writeConsoleReply('Sendios user ID is ' + userId);
+    writeConsole('Sendios user ID is ' + userId, true);
     request('users/' + userId + '/online', 'PUT', {
         "timestamp": "2010-01-01T08:15:30-01:00",
         'user_id': userId,
@@ -72,11 +71,6 @@ async function finishController() {
     renderTemplate('finish');
 }
 
-//------------------------ Helpers -------------------------
-
-function el(selector) {
-    return document.getElementById(selector);
-}
 
 //--------------------- EVENTS ---------------
 
@@ -107,14 +101,14 @@ function renderTemplate(name, rerender = false) {
     if (name === currentTemplate && !rerender) {
         return;
     }
-    let code = el(name + '_template').innerHTML;
+    let code = document.getElementById(name + '_template').innerHTML;
     if (code) {
         main_content.innerHTML = code;
     }
     currentTemplate = name;
 }
 
-registerEvent('submit', 'fruit_form', function (event){
+registerEvent('submit', 'fruit_form', function (event) {
     console.log(event.target);
     let fruit = event.target.elements.fruit.value;
     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
@@ -141,7 +135,7 @@ registerEvent('submit', 'email_form', function (event) {
                 } else {
                     emailStatus += ' and not trusted';
                 }
-                writeConsoleReply('Email status: ' + emailStatus);
+                writeConsole('Email status: ' + emailStatus, true);
 
                 regThanksController();
                 // if (data.valid) {
@@ -174,7 +168,7 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     if (body) {
         consoleText += '&nbsp;' + body;
     }
-    writeConsoleSend(consoleText);
+    writeConsole(consoleText);
 
     switch (method) {
         case "email/check":
@@ -202,7 +196,7 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
         },
         body
     }).catch(function (data) {
-        writeConsoleReply('API request or Network error');
+        writeConsole('API request or Network error', true);
     });
 
     if (response) {
@@ -212,15 +206,17 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     }
 }
 
-function writeConsoleReply(message) {
-    let console = el("console");
-    console.innerHTML += '<div class="replyMessage">' + message + '</div>';
-    console.scrollTop = console.scrollHeight;
-}
+function writeConsole(message, isReply = false) {
+    let console = document.getElementById("console");
+    let messageType;
 
-function writeConsoleSend(message) {
-    let console = el("console");
-    console.innerHTML += '<div class="sendMessage">' + message + '</div>';
+    if (isReply) {
+        messageType = 'reply';
+    } else {
+        messageType = 'send';
+    }
+
+    console.innerHTML += '<div class="' + messageType + 'Message">' + message + '</div>';
     console.scrollTop = console.scrollHeight;
 }
 
