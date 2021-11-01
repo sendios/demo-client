@@ -2,81 +2,111 @@ let projectId = 17125;
 let typeId = 1;
 let email;
 let userId;
+let main_content = document.getElementById('main_content');
 
+let events = {'submit':[], 'click':[]};
 
-document.getElementById('email_form').onsubmit = function (event) {
-    email = event.target.elements.email.value;
-    // validate and fix email
-    request('email/check', 'POST', {"email": email})
-        .then(function (data) {
-            email = data.email;
-            let emailStatus;
-            if (data.valid) {
-                emailStatus = 'valid';
-            } else {
-                emailStatus = 'invalid';
-            }
-            if (data.trusted) {
-                emailStatus += ' and trusted';
-            } else {
-                emailStatus += ' and not trusted';
-            }
-            writeConsole('Email status: ' + emailStatus);
+showTemplate('reg');
 
-            request('user/project/' + projectId + '/email/' + email)
-                .then(function (data) {
-                    userId = data.user.id;
-                    writeConsole('Sendios user ID is ' + userId)
-                });
-        });
-    return false;
+function showTemplate(name) {
+    let code = document.getElementById(name + '_template').innerHTML;
+    if (code) {
+        main_content.innerHTML = code;
+    }
+}
+
+main_content.onsubmit = function (event) {
+    if (typeof (events[event.type][event.target.id]) === 'function') {
+        return events[event.type][event.target.id](event);
+    }
 };
 
+main_content.onclick = function (event) {
+    if (typeof (events[event.type][event.target.id]) === 'function') {
+        return events[event.type][event.target.id](event);
+    }
+};
 
-document.getElementById('payment').onclick = function () {
+function registerEvent(eventType, objectId, callback) {
+    events[eventType][objectId] = callback;
+}
+
+registerEvent('submit', 'email_form', function (event) {
+        email = event.target.elements.email.value;
+        // validate and fix email
+        request('email/check', 'POST', {"email": email})
+            .then(function (data) {
+                email = data.email;
+                let emailStatus;
+                if (data.valid) {
+                    emailStatus = 'valid';
+                } else {
+                    emailStatus = 'invalid';
+                }
+                if (data.trusted) {
+                    emailStatus += ' and trusted';
+                } else {
+                    emailStatus += ' and not trusted';
+                }
+                writeConsole('Email status: ' + emailStatus);
+
+                request('user/project/' + projectId + '/email/' + email)
+                    .then(function (data) {
+                        userId = data.user.id;
+                        writeConsole('Sendios user ID is ' + userId)
+                    });
+            });
+        showTemplate('payment');
+        return false;
+    }
+);
+
+
+
+registerEvent('click', 'payment', function () {
     request('lastpayment', 'POST', {
         'user_id': userId,
         "start_date": "1509617696",
         "expire_date": "1609617696",
         "total_count": "14",
     })
-}
+});
 
-document.getElementById('send').onclick = function () {
-    request('push/system', 'POST', {
-        'type_id': typeId,
-        'project_id': projectId,
-        'category': 1,
-        'client_id': 134933,
-        'data': {
-            'user': {
-                'email': email,
-            }
-        }
-    }).then(function () {
-        request('user/project/' + projectId + '/email/' + email)
-            .then(function (data) {
-                userId = data.user.id;
-                writeConsole('Sendios user ID is ' + userId)
-            });
-    });
-}
-
-document.getElementById('field').onclick = function () {
-    request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
-        'fruit': 'banana',
-    }).then(function (){
-        request('userfields/project/' + projectId + '/email/' + email, 'GET')
-            .then(function (data) {console.log(data)});
-    });
-}
-
-document.getElementById('online').onclick = function () {
-    request('users/' + userId + '/online', 'PUT', {
-        "timestamp": "2010-01-01T08:15:30-01:00",
-        'user_id': userId,
-    }, 'https://api-proxy.sendios.co/v3/');
-}
+// document.getElementById('send').onclick = function () {
+//     request('push/system', 'POST', {
+//         'type_id': typeId,
+//         'project_id': projectId,
+//         'category': 1,
+//         'client_id': 134933,
+//         'data': {
+//             'user': {
+//                 'email': email,
+//             }
+//         }
+//     }).then(function () {
+//         request('user/project/' + projectId + '/email/' + email)
+//             .then(function (data) {
+//                 userId = data.user.id;
+//                 writeConsole('Sendios user ID is ' + userId)
+//             });
+//     });
+// }
+//
+// document.getElementById('field').onclick = function () {
+//     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
+//         'fruit': 'banana',
+//     }).then(function (){
+//         request('userfields/project/' + projectId + '/email/' + email, 'GET')
+//             .then(function (data) {console.log(data)});
+//     });
+// }
+//
+// document.getElementById('online').onclick = function () {
+//     request('users/' + userId + '/online', 'PUT', {
+//         "timestamp": "2010-01-01T08:15:30-01:00",
+//         'user_id': userId,
+//     }, 'https://api-proxy.sendios.co/v3/');
+// }
 
 
 async function request(method = '', httpMethod = 'GET', data = {}, host = '') {

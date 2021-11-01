@@ -17,23 +17,32 @@
     </style>
 </head>
 <body>
+<div id="main_content">
 
-<form id="email_form">
-    <input type="email" id="email" placeholder="1. your email" required>
-    <input type="submit">
-</form>
-<br><br>
-<button id="send">2. Send email</button>
-<br><br>
-<button id="online">3. Send Online</button>
-<br><br>
-<button id="payment">3. Make payment</button>
-<br><br>
-<button id="field">4. Set favorite fruit</button>
+</div>
 
+<template id="reg_template">
+    <form id="email_form">
+        <input type="email" id="email" placeholder="1. your email" required>
+        <input type="submit">
+    </form>
+</template>
 
-<br><br>
-<button id="unsub">. Unsubscribe</button>
+<template id="send_template">
+    <button id="send">Send email</button>
+</template>
+
+<template id="fruit_template">
+    <button id="field">Set favorite fruit</button>
+</template>
+
+<template id="payment_template">
+    <button id="payment">Make payment</button>
+</template>
+
+<template id="unsub_template">
+    <button id="unsub">Unsubscribe</button>
+</template>
 
 
 <div id="console"></div>
