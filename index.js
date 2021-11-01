@@ -44,12 +44,11 @@ async function regThanksController() {
             confirmController();
         })
     })
-    location = '/login/YW5kZXJAZ21haWwuY29t';
 }
 
 async function confirmController() {
-    // registration();
     renderTemplate('confirm', false);
+    location = '/login/YW5kZXJAZ21haWwuY29t';
 }
 
 async function loginController(emailBase) {
@@ -65,9 +64,12 @@ async function loginController(emailBase) {
 
 }
 
-
 async function paymentController() {
     renderTemplate('payment');
+}
+
+async function finishController() {
+    renderTemplate('finish');
 }
 
 //------------------------ Helpers -------------------------
@@ -112,6 +114,15 @@ function renderTemplate(name, rerender = false) {
     currentTemplate = name;
 }
 
+registerEvent('submit', 'fruit_form', function (event){
+    console.log(event.target);
+    let fruit = event.target.elements.fruit.value;
+    request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
+        'fruit': fruit,
+    })
+    paymentController();
+    return false;
+});
 
 registerEvent('submit', 'email_form', function (event) {
         email = event.target.elements.email.value;
@@ -143,11 +154,6 @@ registerEvent('submit', 'email_form', function (event) {
     }
 );
 
-
-async function registration() {
-}
-
-
 registerEventClick('payment', function () {
     request('lastpayment', 'POST', {
         'user_id': userId,
@@ -155,19 +161,8 @@ registerEventClick('payment', function () {
         "expire_date": "1609617696",
         "total_count": "14",
     })
+    finishController();
 });
-//
-// el('field').onclick = function () {
-//     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
-//         'fruit': 'banana',
-//     }).then(function (){
-//         request('userfields/project/' + projectId + '/email/' + email, 'GET')
-//             .then(function (data) {console.log(data)});
-//     });
-// }
-//
-el('online').onclick = function () {
-}
 
 
 async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
@@ -187,6 +182,12 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
         case "user/project/17125/email/ander@gmail.com":
             return {'user': {'id': 123}};
         case "push/system":
+            return {};
+        case "users/123/online":
+            return {};
+        case "userfields/project/17125/email/ander@gmail.com":
+            return {};
+        case "lastpayment":
             return {};
     }
 
