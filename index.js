@@ -47,7 +47,7 @@ async function regThanksController() {
 
 async function confirmController() {
     renderTemplate('confirm', false);
-    location = '/login/YW5kZXJAZ21haWwuY29t';
+    location = '/login/YW5kcmVpbndhbGRAZ21haWwuY29t';
 }
 
 async function loginController(emailBase) {
@@ -167,20 +167,20 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     }
     writeConsole(consoleText);
 
-    switch (method) {
-        case "email/check":
-            return {'email': 'ander@gmail.com'};
-        case "user/project/17125/email/ander@gmail.com":
-            return {'user': {'id': 123}};
-        case "push/system":
-            return {};
-        case "users/123/online":
-            return {};
-        case "userfields/project/17125/email/ander@gmail.com":
-            return {};
-        case "lastpayment":
-            return {};
-    }
+    // switch (method) {
+    //     case "email/check":
+    //         return {'email': 'ander@gmail.com'};
+    //     case "user/project/17125/email/ander@gmail.com":
+    //         return {'user': {'id': 123}};
+    //     case "push/system":
+    //         return {};
+    //     case "users/123/online":
+    //         return {};
+    //     case "userfields/project/17125/email/ander@gmail.com":
+    //         return {};
+    //     case "lastpayment":
+    //         return {};
+    // }
 
     if (!host) {
         host = 'https://api-proxy.sendios.co/v1/';
