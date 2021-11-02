@@ -47,7 +47,6 @@ async function regThanksController() {
 
 async function confirmController() {
     renderTemplate('confirm', false);
-    location = '/login/YW5kcmVpbndhbGRAZ21haWwuY29t';
 }
 
 async function loginController(emailBase) {
