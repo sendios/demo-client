@@ -40,6 +40,11 @@ async function regThanksController() {
                     'email': email,
                 }
             }
+        }).then(function (){
+            request('user/project/' + projectId + '/email/' + email).then(function (data){
+                userId = data.user.id;
+                writeConsole('Sendios user ID is ' + userId, true);
+            })
         });
         confirmController();
     })
@@ -143,12 +148,11 @@ registerEvent('submit', 'email_form', function (event) {
                 }
                 writeConsole('Email status: ' + emailStatus, true);
 
-                regThanksController();
-                // if (data.valid) {
-                // } else {
-                //     route('confirm');
-                //    route('regFixEmail');
-                // }
+                if (data.valid) {
+                    regThanksController();
+                } else {
+                    regFixEmailController();
+                }
             });
         return false;
     }
@@ -215,19 +219,19 @@ function writeConsole(message, isReply = false) {
     console.scrollTop = console.scrollHeight;
 }
 
-// setInterval(function () {
-//     fetch('https://webhook-store.sendios.co/pop/17125/' + btoa(email))
-//         .then(function (response) {
-//             response.json().then(events => events.forEach(function (event) {
-//                 let message = '📊&nbsp;' + event.event;
-//                 if (event.mail_id !== undefined) {
-//                     message += ' email #' + event.mail_id;
-//                 }
-//                 writeConsole(message)
-//             }));
-//         })
-//         .catch(response => console.log(response.status));
-// }, 3000)
+setInterval(function () {
+    fetch('https://webhook-store.sendios.co/pop/17125/' + btoa(email))
+        .then(function (response) {
+            response.json().then(events => events.forEach(function (event) {
+                let message = '📊&nbsp;' + event.event;
+                if (event.mail_id !== undefined) {
+                    message += ' email #' + event.mail_id;
+                }
+                writeConsole(message)
+            }));
+        })
+        .catch(response => console.log(response.status));
+}, 3000)
 
 
 
