@@ -1,6 +1,8 @@
 <html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8"/>
+    <title>Sendios Demo Client</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/normalize.css">
 
@@ -32,7 +34,7 @@
         .red_text {
             color: #ED14E4;
         }
-        .red_back {
+        .red_back, .submit_button {
             background-color: #ED14E4;
         }
         .red_link {
@@ -56,25 +58,42 @@
         h2 {
         }
 
-        /* text L0 */
+        /* text L0 - 14px on design */
         #console {
             font-size: 1em;
         }
 
-        /* text L1 */
-        .info_block {
+        /* text L1 - 16px on design*/
+        .info_block, .text_input {
             font-size: 1.1em;
         }
 
-        /* text L2 */
+        /* text L2 - 14px on design*/
         .action_block {
             font-size: 1.2em;
         }
 
-
         .formError {
             color: #f55;
             display: none;
+        }
+
+        .text_input {
+            display: block;
+            width: 100%;
+            line-height: 2.5em;
+            border: 1px solid #C9CAD1;
+            border-radius: 12px;
+            padding: 0 10px;
+        }
+
+        .submit_button {
+            display: block;
+            width: 100%;
+            line-height: 2.5em;
+            border: none;
+            color: #fff;
+            text-transform: uppercase;
         }
 
         #console {
@@ -84,7 +103,7 @@
             width: 100%;
             box-sizing: border-box;
             top: 60%;
-            padding: 30px 10px 60%;
+            padding: 20px 10px 60%;
             overflow-y: scroll;
         }
 
@@ -119,26 +138,27 @@
     <div class="action_block">
         <p>Please leave your email for starting demo</p>
         <form id="email_form">
-            <input type="email" name="email" placeholder="1. your email" autocomplete="username" required>
+            <input type="email" class="text_input" name="email" placeholder="type your email" autocomplete="username" required>
             <div class="formError" id="emailError">Please provide valid and not temporary email</div>
-            <input type="submit">
+            <input type="submit" class="submit_button">
         </form>
     </div>
 </template>
 
-<template id="regThanks_template">
-    <div class="info_block">
-        <p>Thank you for registration!</p>
-        <p>We will send you an test email</p>
-    </div>
-    <div class="action_block">
-        <button class="ok" id="okRegThanks">OK</button>
-    </div>
-</template>
-
 <template id="confirm_template">
+    <div class="info_block">
+        <h1>Find our email</h1>
+        <p>Thank you for registration! ⭐️</p>
+        <p>We sent you a test email</p>
+    </div>
+
     <div class="action_block">
-        <p>Please find our letter in your inbox, and click on link</p>
+        <ul>
+            <li>Open your mailbox</li>
+            <li>Open your email from <span class="red_text">sendios@qa.sendertest.com</span></li>
+            <li>Click on the button or link in email</li>
+            <li>By click you will came back to the demo</li>
+        </ul>
     </div>
     <a href="/login/YW5kcmVpbndhbGRAZ21haWwuY29t">link in email</a>
 </template>

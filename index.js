@@ -19,7 +19,7 @@ switch (path[1]) {
 async function regController() {
     renderTemplate('reg');
     writeConsole("It's chat-like log of requests to our API and Webhooks to your analytics", true);
-    // next regThanksController
+    // next confirmController
 }
 
 async function regFixEmailController() {
@@ -27,32 +27,26 @@ async function regFixEmailController() {
     document.getElementById('emailError').style.display = 'block';
 }
 
-async function regThanksController() {
-    let typeId = 1;
-    renderTemplate('regThanks', false);
-    registerEventClick('okRegThanks', function () {
-        request('push/system', 'POST', {
-            'type_id': typeId,
-            'project_id': projectId,
-            'category': 1,
-            'client_id': 134933,
-            'data': {
-                'user': {
-                    'email': email,
-                }
-            }
-        }).then(function (){
-            request('user/project/' + projectId + '/email/' + email).then(function (data){
-                userId = data.user.id;
-                writeConsole('Sendios user ID is ' + userId, true);
-            })
-        });
-        confirmController();
-    })
-}
-
 async function confirmController() {
     renderTemplate('confirm', false);
+
+    let typeId = 2;
+    request('push/system', 'POST', {
+        'type_id': typeId,
+        'project_id': projectId,
+        'category': 1,
+        'client_id': 134933,
+        'data': {
+            'user': {
+                'email': email,
+            }
+        }
+    }).then(function () {
+        request('user/project/' + projectId + '/email/' + email).then(function (data) {
+            userId = data.user.id;
+            writeConsole('Sendios user ID is ' + userId, true);
+        })
+    });
 }
 
 async function loginController(emailBase) {
@@ -65,7 +59,6 @@ async function loginController(emailBase) {
         "timestamp": "2010-01-01T08:15:30-01:00",
         'user_id': userId,
     }, 'https://api-proxy.sendios.co/v3/');
-
 }
 
 async function paymentController() {
@@ -150,7 +143,7 @@ registerEvent('submit', 'email_form', function (event) {
                 writeConsole('Email status: ' + emailStatus, true);
 
                 if (data.valid) {
-                    regThanksController();
+                    confirmController();
                 } else {
                     regFixEmailController();
                 }
