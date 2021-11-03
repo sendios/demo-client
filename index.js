@@ -18,6 +18,7 @@ switch (path[1]) {
 
 async function regController() {
     renderTemplate('reg');
+    writeConsole("It's chat-like log of requests to our API and Webhooks to your analytics", true);
     // next regThanksController
 }
 
