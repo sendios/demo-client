@@ -227,7 +227,7 @@ setInterval(function () {
                 if (event.mail_id !== undefined) {
                     message += ' email #' + event.mail_id;
                 }
-                writeConsole(message)
+                writeConsole(message, true);
             }));
         })
         .catch(response => console.log(response.status));

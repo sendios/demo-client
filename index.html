@@ -3,14 +3,42 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/normalize.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Roboto&display=swap" rel="stylesheet">
+
     <style>
+        html,body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F3F9FF;
+        }
+        .info_block {
+            background-color: #fff;
+        }
+
+
+        h1,h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+        h1 {
+        }
+        h2 {
+        }
+
+        /* smallest text */
+        .console {
+            font-size: 1em;
+        }
+
         .formError {
             color: #f55;
             display: none;
         }
 
         #console {
-            background-color: #aaa;
+            background-color: #18222d;
             position: fixed;
             height: 50%;
             width: 100%;
@@ -19,7 +47,7 @@
         }
 
         #console .sendMessage, #console .replyMessage {
-            background: #55f;
+            background-color: #3d6b97;
             color: #fff;
             max-width: 70%;
             text-overflow: inherit;
@@ -29,6 +57,7 @@
         }
 
         #console .replyMessage {
+            background-color: #213040;
             float: left;
         }
     </style>
@@ -39,14 +68,18 @@
 
 
 <template id="reg_template">
-    <p>Hello! Its demo client for Sendios platform</p>
-    <p>Please leave your email for starting demo</p>
-
-    <form id="email_form">
-        <input type="email" name="email" placeholder="1. your email" required>
-        <div class="formError" id="emailError">Please provide valid and not temporary email</div>
-        <input type="submit">
-    </form>
+    <div class="info_block">
+        <h1>Welcome to <span style="color: #ED14E4">Fruity</span></h1>
+        <p>Hello! Its demo client for Sendios platform</p>
+    </div>
+    <div class="action_block">
+        <p>Please leave your email for starting demo</p>
+        <form id="email_form">
+            <input type="email" name="email" placeholder="1. your email" required>
+            <div class="formError" id="emailError">Please provide valid and not temporary email</div>
+            <input type="submit">
+        </form>
+    </div>
 </template>
 
 <template id="regThanks_template">
