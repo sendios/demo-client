@@ -21,6 +21,9 @@
         #main_content {
             background-color: #F3F9FF;
             min-height: 100%;
+            max-width: 600px;
+            display: block;
+            margin: 0 auto;
         }
 
         .info_block {
@@ -107,6 +110,12 @@
             overflow-y: scroll;
         }
 
+        #console .contentWrapper {
+            display: block;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
         #console .sendMessage, #console .replyMessage {
             background-color: #3d6b97;
             color: #d3d3d3;
@@ -126,7 +135,11 @@
 </head>
 <body>
 <div id="main_content"></div>
-<div id="console"></div>
+<div id="console">
+    <div class="contentWrapper">
+        <div id="consoleMessages"></div>
+    </div>
+</div>
 
 
 <template id="reg_template">

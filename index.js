@@ -201,7 +201,7 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
 }
 
 function writeConsole(message, isReply = false) {
-    let console = document.getElementById("console");
+    let console = document.getElementById("consoleMessages");
     let messageType;
 
     if (isReply) {
