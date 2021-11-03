@@ -23,15 +23,14 @@ async function regController() {
 }
 
 async function regFixEmailController() {
-    renderTemplate('reg', false);
     document.getElementById('emailError').style.display = 'block';
     // next confirmController
 }
 
 async function confirmController() {
-    renderTemplate('confirm', false);
+    renderTemplate('confirm', {'email': email});
 
-    let typeId = 2;
+    let typeId = 4000;
     request('push/system', 'POST', {
         'type_id': typeId,
         'project_id': projectId,
@@ -40,7 +39,8 @@ async function confirmController() {
         'data': {
             'user': {
                 'email': email,
-            }
+            },
+            'link': 'https://demo-client.sendios.co/login/' + btoa(email),
         }
     }).then(function () {
         request('user/project/' + projectId + '/email/' + email).then(function (data) {
@@ -53,7 +53,8 @@ async function confirmController() {
 
 async function loginController(emailBase) {
     email = atob(emailBase);
-    renderTemplate('login');
+    renderTemplate('login', {'email' : email});
+
     let data = await request('user/project/' + projectId + '/email/' + email)
     userId = data.user.id;
     writeConsole('Sendios user ID is ' + userId, true);
@@ -107,11 +108,19 @@ function registerEvent(eventType, objectId, callback) {
 //-----------------------------------------------
 
 
-function renderTemplate(name, rerender = false) {
+function renderTemplate(name, variables = false) {
     if (name === currentTemplate && !rerender) {
         return;
     }
     let code = document.getElementById(name + '_template').innerHTML;
+
+    if (variables !== false) {
+        Object.keys(variables).forEach(function (key) {
+            console.log(key);
+            code = code.replace('{{ ' + key + ' }}', variables[key]);
+        });
+    }
+
     if (code) {
         main_content.innerHTML = code;
     }
@@ -162,7 +171,8 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     if (httpMethod === 'POST' || httpMethod === 'PUT') {
         body = JSON.stringify(data)
     }
-    let consoleText = method;
+    let consoleText = '&#9881;&nbsp;' + method;
+
     if (body) {
         consoleText += '&nbsp;' + body;
     }

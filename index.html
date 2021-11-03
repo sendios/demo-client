@@ -50,7 +50,7 @@
 
         h1, h2 {
             font-weight: 700;
-            margin: 0;
+            margin: 0 0 15px;
         }
         p {
             margin: 0;
@@ -176,18 +176,17 @@
     <div class="action_block">
         <ul>
             <li>Open your mailbox</li>
-            <li>Open your email from <span class="red_text">sendios@qa.sendertest.com</span></li>
+            <li>Open your email from <span class="red_text">{{ email }}</span></li>
             <li>Click on the button or link in email</li>
             <li>By click you will came back to the demo</li>
         </ul>
     </div>
-    <a href="/login/YW5kcmVpbndhbGRAZ21haWwuY29t">link in email</a>
 </template>
 
 <template id="login_template">
     <div class="info_block">
         <h1>Favorite fruit</h1>
-        <p>Thank you for letter confirmation!</p>
+        <p>Thank you for confirm from {{ email }}</p>
         <p>Now we know, that you're registered user and send online event.</p>
     </div>
     <div class="action_block">
