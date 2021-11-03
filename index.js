@@ -25,6 +25,7 @@ async function regController() {
 async function regFixEmailController() {
     renderTemplate('reg', false);
     document.getElementById('emailError').style.display = 'block';
+    // next confirmController
 }
 
 async function confirmController() {
@@ -47,6 +48,7 @@ async function confirmController() {
             writeConsole('Sendios user ID is ' + userId, true);
         })
     });
+    // next loginController
 }
 
 async function loginController(emailBase) {
@@ -56,9 +58,10 @@ async function loginController(emailBase) {
     userId = data.user.id;
     writeConsole('Sendios user ID is ' + userId, true);
     request('users/' + userId + '/online', 'PUT', {
-        "timestamp": "2010-01-01T08:15:30-01:00",
+        "timestamp": "2010-01-01T08:15:30-01:00", // @TODO
         'user_id': userId,
     }, 'https://api-proxy.sendios.co/v3/');
+    // next paymentController
 }
 
 async function paymentController() {
@@ -66,12 +69,13 @@ async function paymentController() {
     registerEventClick('payment', function () {
         request('lastpayment', 'POST', {
             'user_id': userId,
-            "start_date": "1509617696",
+            "start_date": "1509617696", // @TODO
             "expire_date": "1609617696",
             "total_count": "14",
         })
         finishController();
     });
+    // next finishController
 }
 
 async function finishController() {
@@ -117,7 +121,7 @@ function renderTemplate(name, rerender = false) {
 registerEvent('submit', 'fruit_form', function (event) {
     let fruit = event.target.elements.fruit.value;
     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
-        'fruit': fruit,
+        'fruit2': 12,
     })
     paymentController();
     return false;
@@ -158,7 +162,7 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
     if (httpMethod === 'POST' || httpMethod === 'PUT') {
         body = JSON.stringify(data)
     }
-    let consoleText = '️&nbsp;' + method;
+    let consoleText = method;
     if (body) {
         consoleText += '&nbsp;' + body;
     }
@@ -214,7 +218,7 @@ function writeConsole(message, isReply = false) {
 }
 
 setInterval(function () {
-    fetch('https://webhook-store.sendios.co/pop/17125/' + btoa(email))
+    fetch('https://webhook-store.sendios.co/pop/' + projectId + '/' + btoa(email))
         .then(function (response) {
             response.json().then(events => events.forEach(function (event) {
                 let message = '📊&nbsp;' + event.event;

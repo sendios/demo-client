@@ -8,12 +8,12 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Roboto&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto&display=swap"
           rel="stylesheet">
 
     <style>
         html, body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #fff;
             box-sizing: border-box;
         }
@@ -44,21 +44,22 @@
             color: #ED14E4;
             text-decoration: none;
         }
+        .warning_text {
+            color: #AD094E;
+        }
 
-
-        h1, h1 {
-            font-family: 'Poppins', sans-serif;
+        h1, h2 {
             font-weight: 700;
             margin: 0;
         }
         p {
             margin: 0;
+            padding-bottom: 10px;
         }
 
-        h1 {
-        }
-
-        h2 {
+        /*roboto font*/
+        #console {
+            font-family: 'Roboto', sans-serif;
         }
 
         /* text L0 - 14px on design */
@@ -76,6 +77,11 @@
             font-size: 1.2em;
         }
 
+        .action_accent {
+            font-size: 1.3em;
+        }
+
+
         .formError {
             color: #f55;
             display: none;
@@ -88,6 +94,7 @@
             border: 1px solid #C9CAD1;
             border-radius: 12px;
             padding: 0 10px;
+            margin-bottom: 25px;
         }
 
         .submit_button {
@@ -97,6 +104,7 @@
             border: none;
             color: #fff;
             text-transform: uppercase;
+            margin-bottom: 20px;
         }
 
         #console {
@@ -178,36 +186,42 @@
 
 <template id="login_template">
     <div class="info_block">
+        <h1>Favorite fruit</h1>
         <p>Thank you for letter confirmation!</p>
         <p>Now we know, that you're registered user and send online event.</p>
     </div>
     <div class="action_block">
-        <p>Next, please tell us your favorite fruit:</p>
+        <p class="action_accent">Choose fruit you like more:</p>
         <form id="fruit_form">
-            <input name="fruit" placeholder="name of fruit" required>
-            <input type="submit">
+            <input name="fruit" placeholder="name of fruit (ex.banana)"  class="text_input" required>
+            <input type="submit" class="submit_button">
         </form>
     </div>
 </template>
 
 <template id="payment_template">
     <div class="info_block">
+        <h1>Payment (fake)</h1>
         <p>We're saved your favorite fruit in out system</p>
     </div>
     <div class="action_block">
         <p>Please make fake payment for this fruit</p>
-        <button id="payment">Make payment</button>
+        <button id="payment"  class="submit_button">Make payment</button>
+        <p class="warning_text">Please remember all your actions here are unreal. Your money is safe!</p>
     </div>
 </template>
 
 <template id="finish_template">
     <div class="info_block">
+        <h1>Campaign in admin panel</h1>
         <p>Thank you for filling all data!</p>
         <p>We've sent email about payment</p>
     </div>
     <div class="action_block">
-        <p>Now you can send email campaign for your fruit lovers</p>
-        <p>After that you can unsubscribe in email</p>
+        <p class="action_accent">Now you can send marketing campaign for your fruit lovers</p>
+        <p>Ask the demonstrator to show you how easy to create ane email campaign in our admin panel</p>
+        <br><br>
+        <p>We promise not to disturb you but be aware that in our email you can unsubscribe from the demo client.</p>
     </div>
 </template>
 
