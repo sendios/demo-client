@@ -129,7 +129,6 @@ function renderTemplate(name, variables = false) {
 
     if (variables !== false) {
         Object.keys(variables).forEach(function (key) {
-            console.log(key);
             code = code.replace('{{ ' + key + ' }}', variables[key]);
         });
     }
@@ -143,7 +142,7 @@ function renderTemplate(name, variables = false) {
 registerEvent('submit', 'fruit_form', function (event) {
     let fruit = event.target.elements.fruit.value;
     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
-        'fruit2': 12,
+        'fruit': fruit,
     })
     paymentController();
     return false;
