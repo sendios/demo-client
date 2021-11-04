@@ -228,7 +228,8 @@ async function request(method = '', httpMethod = 'GET', data = {}, host = '') {
 }
 
 function writeConsole(message, isReply = false) {
-    let console = document.getElementById("consoleMessages");
+    let consoleMessages = document.getElementById("consoleMessages");
+    let console = document.getElementById("console");
     let messageType;
 
     if (isReply) {
@@ -236,7 +237,7 @@ function writeConsole(message, isReply = false) {
     } else {
         messageType = 'send';
     }
-    console.innerHTML += '<div class="' + messageType + 'Message">' + message + '</div>';
+    consoleMessages.innerHTML += '<div class="' + messageType + 'Message">' + message + '</div>';
     console.scrollTop = console.scrollHeight;
 }
 
