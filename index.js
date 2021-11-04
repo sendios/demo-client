@@ -18,7 +18,7 @@ switch (path[1]) {
 
 async function regController() {
     renderTemplate('reg');
-    writeConsole("It's chat-like log of requests to our API and Webhooks to your analytics", true);
+    writeConsole("It's chat-like log of <br>&#9881; requests to our API <br>&#128202;Webhooks to your analytics", true);
     // next confirmController
 }
 
@@ -30,7 +30,7 @@ async function regFixEmailController() {
 async function confirmController() {
     renderTemplate('confirm', {'email': email});
 
-    let typeId = 4000;
+    let typeId = 4000; // confirm letter
     request('push/system', 'POST', {
         'type_id': typeId,
         'project_id': projectId,
@@ -53,7 +53,7 @@ async function confirmController() {
 
 async function loginController(emailBase) {
     email = atob(emailBase);
-    renderTemplate('login', {'email' : email});
+    renderTemplate('login', {'email': email});
 
     let data = await request('user/project/' + projectId + '/email/' + email)
     userId = data.user.id;
@@ -73,6 +73,19 @@ async function paymentController() {
             "start_date": "1509617696", // @TODO
             "expire_date": "1609617696",
             "total_count": "14",
+        })
+        let typeId = 4001; // payment letter
+        request('push/system', 'POST', {
+            'type_id': typeId,
+            'project_id': projectId,
+            'category': 1,
+            'client_id': 134933,
+            'data': {
+                'user': {
+                    'email': email,
+                },
+                'link': 'https://demo-client.sendios.co/login/' + btoa(email),
+            }
         })
         finishController();
     });
@@ -231,7 +244,7 @@ setInterval(function () {
     fetch('https://webhook-store.sendios.co/pop/' + projectId + '/' + btoa(email))
         .then(function (response) {
             response.json().then(events => events.forEach(function (event) {
-                let message = '📊&nbsp;' + event.event;
+                let message = '&#128202;&nbsp;' + event.event;
                 if (event.mail_id !== undefined) {
                     message += ' email #' + event.mail_id;
                 }
