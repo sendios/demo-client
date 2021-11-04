@@ -59,7 +59,7 @@ async function loginController(emailBase) {
     userId = data.user.id;
     writeConsole('Sendios user ID is ' + userId, true);
     request('users/' + userId + '/online', 'PUT', {
-        "timestamp": "2010-01-01T08:15:30-01:00", // @TODO
+        "timestamp": new Date().toLocaleString(),
         'user_id': userId,
     }, 'https://api-proxy.sendios.co/v3/');
     // next paymentController
@@ -70,9 +70,8 @@ async function paymentController() {
     registerEventClick('payment', function () {
         request('lastpayment', 'POST', {
             'user_id': userId,
-            "start_date": "1509617696", // @TODO
-            "expire_date": "1609617696",
-            "total_count": "14",
+            "start_date": Math.floor(Date.now() / 1000), // @TODO
+            "expire_date": Math.floor(Date.now() / 1000) + 60*5
         })
         let typeId = 4001; // payment letter
         request('push/system', 'POST', {
@@ -142,7 +141,7 @@ function renderTemplate(name, variables = false) {
 registerEvent('submit', 'fruit_form', function (event) {
     let fruit = event.target.elements.fruit.value;
     request('userfields/project/' + projectId + '/email/' + email, 'PUT', {
-        'fruit': fruit,
+        'fav_fruit': fruit,
     })
     paymentController();
     return false;
